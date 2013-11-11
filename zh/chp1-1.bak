@@ -1,0 +1,137 @@
+---
+layout: post
+title: Linux 程序员题库
+---
+
+# 习题海选
+## 四处搜刮
+
+### 将一个字符串逆序
+### 将一个链表逆序
+### 计算一个字节里（byte）里面有多少bit被置1
+### 搜索给定的字节
+### 在一个字符串中找到可能的最长子字符串
+### 字符串转换为整数
+### 整数转换为字符串
+### 解释C语言关键字extern ，static，volatile，const 的含义
+#### 关键字volatile有什么含意 并给出三个不同的例子。
+	一个定义为volatile的变量是说这变量可能会被意想不到地改变，这样，编译器就不会去假设这个变量的值了。精确地说就是，优化器在用到这个变量时必须每次都小心地重新读取这个变量的值，而不是使用保存在寄存器里的备份。下面是volatile变量的几个例子： 
+	1). 并行设备的硬件寄存器（如：状态寄存器） 
+	2). 一个中断服务子程序中会访问到的非自动变量(Non-automatic variables) 
+	3). 多线程应用中被几个任务共享的变量 
+	回答不出这个问题的人是不会被雇佣的。我认为这是区分C程序员和嵌入式系统程序员的最基本的问题。嵌入式系统程序员经常同硬件、中断、RTOS等等打交道，所用这些都要求volatile变量。不懂得volatile内容将会带来灾难。 
+	假设被面试者正确地回答了这是问题（嗯，怀疑这否会是这样），我将稍微深究一下，看一下这家伙是不是直正懂得volatile完全的重要性。 
+	1). 一个参数既可以是const还可以是volatile吗？解释为什么。 
+	2). 一个指针可以是volatile 吗？解释为什么。 
+	3). 下面的函数有什么错误： 
+	int square(volatile int *ptr) 
+	{
+		return *ptr * *ptr; 
+	} 
+
+	下面是答案： 
+	1. 是的。一个例子是只读的状态寄存器。它是volatile因为它可能被意想不到地改变。它是const因为程序不应该试图去修改它。 
+	2. 是的。尽管这并不很常见。一个例子是当一个中服务子程序修该一个指向一个buffer的指针时。 
+	3. 这段代码的有个恶作剧。这段代码的目的是用来返指针*ptr指向值的平方，但是，由于*ptr指向一个volatile型参数，编译器将产生类似下面的代码： 
+	int square(volatile int *ptr) 
+	{ 
+			int a,b; 
+			a = *ptr; 
+			b = *ptr; 
+			return a * b; 
+	} 
+	由于*ptr的值可能被意想不到地该变，因此a和b可能是不同的。结果，这段代码可能返不是你所期望的平方值！正确的代码如下： 
+	long square(volatile int *ptr) 
+	{ 
+			int a; 
+			a = *ptr; 
+			return a * a; 
+	}
+
+### 举例说明typedef和define的用法
+### 语句 for(; 1; )有什么问题？它是什么意思？
+### do... wehile 和 while...do有什么区别？
+### 判断代码输出
+	main()
+	{
+			int a,b,c,d;
+		　　a=10;
+		　　b=a++;
+		　　c=++a;
+		　　d=10*a++;
+		　　printf("b，c，d：%d，%d，%d"，b，c，d）;
+		　　return 0;
+	} 
+### 设有一下说明和定义：（32位编译器）
+	typedef union {long i; int k[5]; char c;} DATE;
+	struct data { int cat; DATE cow; double dog;} too;
+	DATE max;
+则语句 printf("%d",sizeof(struct date)+sizeof(max));的执行结果是：_______
+### 谈谈汇编语言、C和C++三种语言在嵌入式开发中的区别和特点？简述你对嵌入式概念的理解？
+
+### 什么是平衡二叉树？编写一个删除平衡二叉树的程序？
+
+### 写一个程序，求有向有权图两点之间的最小权？
+
+### 根据你的理解，写出Cstring类的构造函数和析构函数？
+
+### 使用C语言实现对ini文件的访问，使程序可以对int，double，字符串类进行读写。
+
+### n×n个方格（n为任意整数），定义若两个格有公共边则称两个格相邻。现将n个格中的N个格子图黑，使每个格子都与黑格子相邻。试编程，使N最小。
+
+### 预处理器（Preprocessor）
+#### 用预处理指令#define 声明一个常数，用以表明1年中有多少秒（忽略闰年问题）
+	#define SECONDS_PER_YEAR (60 * 60 * 24 * 365)UL
+1. #define 语法的基本知识（例如：不能以分号结束，括号的使用，等等） 
+2. 懂得预处理器将为你计算常数表达式的值，因此，直接写出你是如何计算一年中有多少秒而不是计算出实际的值，是更清晰而没有代价的。 
+3. 意识到这个表达式将使一个16位机的整型数溢出-因此要用到长整型符号L,告诉编译器这个常数是的长整型数。 
+4. 如果你在你的表达式中用到UL（表示无符号长整型），那么你有了一个好的起点。记住，第一印象很重要。
+
+#### 写一个"标准"宏MIN，这个宏输入两个参数并返回较小的一个。
+	#define MIN(A,B) ((A) <= (B) (A) : (B)) 
+这个测试是为下面的目的而设的： 
+1. 标识#define在宏中应用的基本知识。这是很重要的，因为直到嵌入(inline)操作符变为标准C的一部分，宏是方便产生嵌入代码的唯一方法，对于嵌入式系统来说，为了能达到要求的性能，嵌入代码经常是必须的方法。 
+2. 三重条件操作符的知识。这个操作符存在C语言中的原因是它使得编译器能产生比if-then-else更优化的代码，了解这个用法是很重要的。 
+3. 懂得在宏中小心地把参数用括号括起来 
+4. 我也用这个问题开始讨论宏的副作用，例如：当你写下面的代码时会发生什么事？ 
+	least = MIN( *p++, b )
+
+#### 预处理器标识#error的目的是什么？
+如果你不知道答案，请看参考文献1。这问题对区分一个正常的伙计和一个书呆子是很有用的。只有书呆子才会读C语言课本的附录去找出象这种问题的答案。当然如果你不是在找一个书呆子，那么应试者最好希望自己不要知道答案。
+
+### 死循环（Infinite loops）
+#### 嵌入式系统中经常要用到无限循环，你怎么样用C编写死循环呢？
+这个问题用几个解决方案。我首选的方案是： 
+	while(1) { } 
+一些程序员更喜欢如下方案： 
+	for(;;) { } 
+这个实现方式让我为难，因为这个语法没有确切表达到底怎么回事。如果一个应试者给出这个作为方案，我将用这个作为一个机会去探究他们这样做的基本原理。如果他们的基本答案是：我被教着这样做，但从没有想到过为什么。这会给我留下一个坏印象。 
+第三个方案是用 goto 
+	Loop: 
+	... 
+	goto Loop; 
+应试者如给出上面的方案，这说明或者他是一个汇编语言程序员（这也许是好事）或者他是一个想进入新领域的BASIC or FORTRAN程序员。
+
+### 数据声明（Data declarations） 
+- 一个整型数（An integer） 
+- 一个指向整型数的指针（A pointer to an integer） 
+-  一个指向指针的的指针，它指向的指针是指向一个整型数（A pointer to a pointer to an integer） 
+- 一个有10个整型数的数组（An array of 10 integers） 
+- 一个有10个指针的数组，该指针是指向一个整型数的（An array of 10 pointers to integers） 
+- 一个指向有10个整型数数组的指针（A pointer to an array of 10 integers） 
+- 一个指向函数的指针，该函数有一个整型参数并返回一个整型数（A pointer to a function that takes an integer as an argument and returns an integer） 
+- 一个有10个指针的数组，该指针指向一个函数，该函数有一个整型参数并返回一个整型数（ An array of ten pointers to functions that take an integer argument and return an integer ）
+
+	答案是： 
+	a) int a; // An integer 
+	b) int *a; // A pointer to an integer 
+	c) int **a; // A pointer to a pointer to an integer 
+	d) int a[10]; // An array of 10 integers 
+	e) int *a[10]; // An array of 10 pointers to integers 
+	f) int ( *a)[10]; // A pointer to an array of 10 integers 
+	g) int ( *a)(int); // A pointer to a function a that takes an integer argument and returns an integer 
+	h) int ( *a[10])(int); // An array of 10 pointers to functions that take an integer argument and return an integer 
+
+
+
+[上一节](chp0-1.html)  |  [目录索引](../index.html)  |  [下一节](chp1-2.html)
